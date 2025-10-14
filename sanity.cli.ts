@@ -1,5 +1,6 @@
 import {defineCliConfig} from 'sanity/cli'
 
+//config
 export default defineCliConfig({
   api: {
     projectId: 'f9rxg371',
