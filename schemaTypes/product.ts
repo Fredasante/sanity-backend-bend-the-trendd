@@ -152,13 +152,6 @@ export const product = defineType({
       initialValue: false,
     }),
 
-    defineField({
-      name: 'isNewArrival',
-      title: 'New Arrival?',
-      type: 'boolean',
-      initialValue: false,
-    }),
-
     // 🕒 Dates
     defineField({
       name: 'createdAt',
