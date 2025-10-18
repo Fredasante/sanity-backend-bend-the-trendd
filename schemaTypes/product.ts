@@ -124,8 +124,9 @@ export const product = defineType({
     defineField({
       name: 'description',
       title: 'Product Description',
-      type: 'text',
-      rows: 3,
+      type: 'array',
+      of: [{type: 'block'}],
+      description: 'Rich text description of the product.',
     }),
 
     // 🚦 Status
