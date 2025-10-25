@@ -60,6 +60,7 @@ export const order = defineType({
           title: 'Region',
           type: 'string',
           validation: (Rule) => Rule.required(),
+          description: 'e.g., Greater Accra, Ashanti, etc.',
         },
         {
           name: 'city',
@@ -72,6 +73,7 @@ export const order = defineType({
           title: 'Delivery Address/Landmark',
           type: 'text',
           validation: (Rule) => Rule.required(),
+          description: 'Full address with landmarks for rider',
         },
       ],
     }),
@@ -128,7 +130,7 @@ export const order = defineType({
             prepare({productName, quantity, price}) {
               return {
                 title: `${productName} x${quantity}`,
-                subtitle: `₵${(price * quantity).toFixed(2)}`,
+                subtitle: `GH₵${(price * quantity).toFixed(2)}`,
               }
             },
           },
@@ -137,52 +139,46 @@ export const order = defineType({
       validation: (Rule) => Rule.required().min(1),
     }),
 
-    // 💰 Order Pricing
+    // 💰 Order Total (Items Only)
     defineField({
       name: 'pricing',
-      title: 'Pricing',
+      title: 'Order Total',
       type: 'object',
       fields: [
         {
-          name: 'itemsTotal',
-          title: 'Items Total',
+          name: 'subtotal',
+          title: 'Subtotal',
           type: 'number',
           validation: (Rule) => Rule.required().min(0),
-          description: 'Total cost of items (paid upfront)',
+          description: 'Total before discount',
         },
         {
           name: 'discount',
           title: 'Discount',
           type: 'number',
           initialValue: 0,
+          description: 'Discount amount',
         },
         {
-          name: 'itemsTotalAfterDiscount',
-          title: 'Items Total After Discount',
+          name: 'total',
+          title: 'Total Amount',
           type: 'number',
           validation: (Rule) => Rule.required().min(0),
-          description: 'Amount customer paid for items',
+          description: 'Final amount customer pays (after discount)',
         },
         {
-          name: 'estimatedDeliveryFee',
-          title: 'Estimated Delivery Fee',
-          type: 'number',
-          validation: (Rule) => Rule.required().min(0),
-          description: 'Initial delivery fee estimate',
-        },
-        {
-          name: 'confirmedDeliveryFee',
-          title: 'Confirmed Delivery Fee',
-          type: 'number',
-          description: 'Actual delivery fee (to be paid on delivery)',
+          name: 'couponCode',
+          title: 'Coupon Code Applied',
+          type: 'string',
+          description: 'Coupon/promo code if used',
         },
       ],
     }),
 
-    // 💳 Items Payment (Upfront via MoMo/Card)
+    // 💳 Payment Information (Items Only)
     defineField({
-      name: 'itemsPayment',
-      title: 'Items Payment',
+      name: 'payment',
+      title: 'Payment',
       type: 'object',
       fields: [
         {
@@ -191,7 +187,9 @@ export const order = defineType({
           type: 'string',
           options: {
             list: [
-              {title: 'Mobile Money', value: 'mobile_money'},
+              {title: 'Mobile Money (MTN)', value: 'momo_mtn'},
+              {title: 'Mobile Money (Vodafone)', value: 'momo_vodafone'},
+              {title: 'Mobile Money (AirtelTigo)', value: 'momo_airteltigo'},
               {title: 'Card (Visa/Mastercard)', value: 'card'},
             ],
           },
@@ -203,10 +201,10 @@ export const order = defineType({
           type: 'string',
           options: {
             list: [
-              {title: 'Pending', value: 'pending'},
-              {title: 'Paid', value: 'paid'},
-              {title: 'Failed', value: 'failed'},
-              {title: 'Refunded', value: 'refunded'},
+              {title: '⏳ Pending', value: 'pending'},
+              {title: '✓ Paid', value: 'paid'},
+              {title: '✗ Failed', value: 'failed'},
+              {title: '↩ Refunded', value: 'refunded'},
             ],
           },
           initialValue: 'pending',
@@ -222,7 +220,7 @@ export const order = defineType({
           name: 'amount',
           title: 'Amount Paid',
           type: 'number',
-          description: 'Amount paid for items',
+          description: 'Amount paid for items (in GH₵)',
         },
         {
           name: 'paidAt',
@@ -232,64 +230,20 @@ export const order = defineType({
       ],
     }),
 
-    // 💵 Delivery Fee Payment (On Delivery)
-    defineField({
-      name: 'deliveryPayment',
-      title: 'Delivery Fee Payment',
-      type: 'object',
-      fields: [
-        {
-          name: 'method',
-          title: 'Payment Method',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Cash', value: 'cash'},
-              {title: 'Mobile Money', value: 'mobile_money'},
-            ],
-          },
-          description: 'How delivery fee will be paid',
-        },
-        {
-          name: 'status',
-          title: 'Status',
-          type: 'string',
-          options: {
-            list: [
-              {title: 'Pending', value: 'pending'},
-              {title: 'Paid', value: 'paid'},
-            ],
-          },
-          initialValue: 'pending',
-        },
-        {
-          name: 'amount',
-          title: 'Amount Paid',
-          type: 'number',
-          description: 'Delivery fee paid on delivery',
-        },
-        {
-          name: 'paidAt',
-          title: 'Paid At',
-          type: 'datetime',
-        },
-      ],
-    }),
-
-    // 🚚 Delivery Status
+    // 🚚 Delivery Status & Rider Info
     defineField({
       name: 'deliveryStatus',
       title: 'Delivery Status',
       type: 'string',
       options: {
         list: [
-          {title: 'Payment Pending', value: 'payment_pending'},
-          {title: 'Payment Received', value: 'payment_received'},
-          {title: 'Confirmed', value: 'confirmed'},
-          {title: 'Preparing for Delivery', value: 'preparing'},
-          {title: 'Out for Delivery', value: 'out_for_delivery'},
-          {title: 'Delivered', value: 'delivered'},
-          {title: 'Cancelled', value: 'cancelled'},
+          {title: '⏳ Payment Pending', value: 'payment_pending'},
+          {title: '✓ Payment Received', value: 'payment_received'},
+          {title: '📋 Confirmed', value: 'confirmed'},
+          {title: '📦 Preparing', value: 'preparing'},
+          {title: '🚚 Out for Delivery', value: 'out_for_delivery'},
+          {title: '✅ Delivered', value: 'delivered'},
+          {title: '❌ Cancelled', value: 'cancelled'},
         ],
         layout: 'dropdown',
       },
@@ -327,13 +281,6 @@ export const order = defineType({
           type: 'datetime',
           description: 'Date agreed with customer for delivery',
         },
-        {
-          name: 'deliveryFeeConfirmed',
-          title: 'Delivery Fee Confirmed?',
-          type: 'boolean',
-          initialValue: false,
-          description: 'Has actual delivery fee been confirmed with customer?',
-        },
       ],
     }),
 
@@ -347,9 +294,9 @@ export const order = defineType({
 
     defineField({
       name: 'adminNotes',
-      title: 'Admin/Delivery Notes',
+      title: 'Admin Notes',
       type: 'text',
-      description: 'Internal notes - delivery instructions, location details, etc.',
+      description: 'Internal notes - inventory, packaging, etc.',
     }),
 
     // 🕒 Timestamps
@@ -378,17 +325,17 @@ export const order = defineType({
     select: {
       orderId: 'orderId',
       customerName: 'customerInfo.fullName',
-      itemsTotal: 'pricing.itemsTotalAfterDiscount',
-      paymentStatus: 'itemsPayment.status',
+      total: 'pricing.total',
+      paymentStatus: 'payment.status',
       deliveryStatus: 'deliveryStatus',
       createdAt: 'createdAt',
     },
-    prepare({orderId, customerName, itemsTotal, paymentStatus, deliveryStatus, createdAt}) {
+    prepare({orderId, customerName, total, paymentStatus, deliveryStatus, createdAt}) {
       const date = new Date(createdAt).toLocaleDateString('en-GB')
       const paymentIcon = paymentStatus === 'paid' ? '✓' : '⏳'
       return {
         title: `${paymentIcon} ${orderId} - ${customerName}`,
-        subtitle: `₵${itemsTotal?.toFixed(2)} • ${deliveryStatus} • ${date}`,
+        subtitle: `GH₵${total?.toFixed(2)} • ${deliveryStatus} • ${date}`,
       }
     },
   },
@@ -402,7 +349,7 @@ export const order = defineType({
     {
       title: 'Unpaid Orders',
       name: 'unpaid',
-      by: [{field: 'itemsPayment.status', direction: 'asc'}],
+      by: [{field: 'payment.status', direction: 'asc'}],
     },
     {
       title: 'By Delivery Status',
