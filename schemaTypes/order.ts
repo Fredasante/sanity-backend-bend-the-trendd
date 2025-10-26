@@ -185,14 +185,7 @@ export const order = defineType({
           name: 'method',
           title: 'Payment Method',
           type: 'string',
-          options: {
-            list: [
-              {title: 'Mobile Money (MTN)', value: 'momo_mtn'},
-              {title: 'Mobile Money (Vodafone)', value: 'momo_vodafone'},
-              {title: 'Mobile Money (AirtelTigo)', value: 'momo_airteltigo'},
-              {title: 'Card (Visa/Mastercard)', value: 'card'},
-            ],
-          },
+          description: 'Payment method used (paystack handles card/mobile money selection)',
           validation: (Rule) => Rule.required(),
         },
         {
