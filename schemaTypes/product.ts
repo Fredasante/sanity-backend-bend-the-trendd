@@ -4,7 +4,6 @@ export const product = defineType({
   name: 'product',
   title: 'Product',
   type: 'document',
-
   fields: [
     // 🏷️ Basic Info
     defineField({
@@ -13,7 +12,6 @@ export const product = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-
     defineField({
       name: 'slug',
       title: 'Slug',
@@ -30,7 +28,6 @@ export const product = defineType({
       options: {hotspot: true},
       validation: (Rule) => Rule.required(),
     }),
-
     defineField({
       name: 'gallery',
       title: 'Gallery Images',
@@ -47,8 +44,9 @@ export const product = defineType({
       options: {
         list: [
           {title: 'Clothing', value: 'clothing'},
+          {title: 'Bags', value: 'bags'},
+          {title: 'Shoes', value: 'shoes'},
           {title: 'Sneakers', value: 'sneakers'},
-          {title: 'Slippers', value: 'slippers'},
           {title: 'Gadgets', value: 'gadgets'},
         ],
         layout: 'dropdown',
@@ -72,26 +70,13 @@ export const product = defineType({
       initialValue: 'women',
     }),
 
-    // 📏 Numeric Sizes (Visible only for Clothing)
+    // 📏 Sizes - Simple array with "Add item" button (iPad friendly!)
     defineField({
       name: 'sizes',
       title: 'Available Sizes',
       type: 'array',
       of: [{type: 'string'}],
-      options: {
-        list: [
-          {title: '6', value: '6'},
-          {title: '8', value: '8'},
-          {title: '10', value: '10'},
-          {title: '12', value: '12'},
-          {title: '14', value: '14'},
-          {title: '16', value: '16'},
-          {title: '18', value: '18'},
-          {title: '20', value: '20'},
-        ],
-        layout: 'tags',
-      },
-      description: 'Select all available sizes (for clothing only)',
+      description: 'Click "Add item" to add each size (e.g., 6, 8, 10, S, M, L)',
       hidden: ({parent}) => parent?.category !== 'clothing',
     }),
 
@@ -102,7 +87,6 @@ export const product = defineType({
       type: 'number',
       validation: (Rule) => Rule.required().min(0),
     }),
-
     defineField({
       name: 'discountPrice',
       title: 'Discount Price (₵)',
@@ -110,14 +94,13 @@ export const product = defineType({
       validation: (Rule) => Rule.min(0),
     }),
 
-    // 🎨 Color
+    // 🎨 Colors - Simple array with "Add item" button (iPad friendly!)
     defineField({
       name: 'colors',
       title: 'Available Colors',
       type: 'array',
       of: [{type: 'string'}],
-      options: {layout: 'tags'},
-      description: 'Example: Red, Black, White, Blue',
+      description: 'Click "Add item" to add each color (e.g., Red, Black, Blue)',
     }),
 
     // 🧾 Description
@@ -161,7 +144,6 @@ export const product = defineType({
       initialValue: () => new Date().toISOString(),
     }),
   ],
-
   preview: {
     select: {
       title: 'name',
