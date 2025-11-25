@@ -47,7 +47,6 @@ export const product = defineType({
           {title: 'Bags', value: 'bags'},
           {title: 'Shoes', value: 'shoes'},
           {title: 'Sneakers', value: 'sneakers'},
-          {title: 'Gadgets', value: 'gadgets'},
         ],
         layout: 'dropdown',
       },
