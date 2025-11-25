@@ -46,7 +46,7 @@ export const product = defineType({
           {title: 'Clothing', value: 'clothing'},
           {title: 'Bags', value: 'bags'},
           {title: 'Shoes', value: 'shoes'},
-          {title: 'Sneakers', value: 'sneakers'},
+          {title: 'Accessories', value: 'acessories'},
         ],
         layout: 'dropdown',
       },
@@ -69,14 +69,14 @@ export const product = defineType({
       initialValue: 'women',
     }),
 
-    // 📏 Sizes - Simple array with "Add item" button (iPad friendly!)
+    // 📏 Sizes - Optional for all categories
     defineField({
       name: 'sizes',
       title: 'Available Sizes',
       type: 'array',
       of: [{type: 'string'}],
-      description: 'Click "Add item" to add each size (e.g., 6, 8, 10, S, M, L)',
-      hidden: ({parent}) => parent?.category !== 'clothing',
+      description:
+        'Click "Add item" to add each size (e.g., S, M, L for clothing, 38, 40 for shoes, or ring sizes). Leave empty if not applicable.',
     }),
 
     // 💰 Price
