@@ -111,6 +111,16 @@ export const product = defineType({
       description: 'Rich text description of the product.',
     }),
 
+    // 📦 Inventory
+    defineField({
+      name: 'stockQuantity',
+      title: 'Stock Quantity',
+      type: 'number',
+      validation: (Rule) => Rule.required().min(0).integer(),
+      initialValue: 1,
+      description: 'Number of items available in stock',
+    }),
+
     // 🚦 Status
     defineField({
       name: 'status',
