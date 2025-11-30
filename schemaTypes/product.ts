@@ -121,22 +121,6 @@ export const product = defineType({
       description: 'Number of items available in stock',
     }),
 
-    // 🚦 Status
-    defineField({
-      name: 'status',
-      title: 'Product Status',
-      type: 'string',
-      options: {
-        list: [
-          {title: 'Available', value: 'available'},
-          {title: 'Sold', value: 'sold'},
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'available',
-      validation: (Rule) => Rule.required(),
-    }),
-
     // ⭐ Flags
     defineField({
       name: 'isFeatured',
